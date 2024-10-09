@@ -71,7 +71,22 @@ public class Choix extends JFrame implements ActionListener {
         } else if (e.getSource() == affi) {
             cardLayout.show(cardPanel, "Afficher");
         } else if (e.getSource() == modif) {
-            cardLayout.show(cardPanel, "Modifier");
+            // Afficher l'interface de connexion avant d'accéder à Modifier
+            Connect connect = new Connect();
+            connect.setVisible(true);
+            
+            // Ajouter un listener pour vérifier l'authentification
+            connect.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                    if (connect.isAuthenticated()) {
+                        // Si l'utilisateur est authentifié, afficher l'interface Modifier
+                        cardLayout.show(cardPanel, "Modifier");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Accès refusé : authentification requise.", "Erreur d'authentification", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
         }
     }
 

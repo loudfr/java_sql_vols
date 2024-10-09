@@ -2,8 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.sql.Time;
+
 
 public class Modifier extends JPanel implements ActionListener {
+    
+    String url = "jdbc:mysql://localhost:3306/vols";
+    String user = "root";
+    String dbPassword = "";
+    
     private CardLayout cardLayout;
     private JPanel cardPanel;
     @SuppressWarnings("unused")
@@ -151,11 +160,7 @@ public class Modifier extends JPanel implements ActionListener {
         if (numVol.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Veuillez entrer le numéro de vol à rechercher.", "Erreur de saisie", JOptionPane.ERROR_MESSAGE);
             return;
-        }
-
-        String url = "jdbc:mysql://localhost:3306/vols";
-        String user = "root";
-        String dbPassword = ""; // Mettez ici votre mot de passe MySQL si nécessaire
+        } 
 
         String query = "SELECT * FROM vol WHERE numvol = ?";
 
@@ -178,8 +183,15 @@ public class Modifier extends JPanel implements ActionListener {
             if (rs.next()) {
                 // Afficher les détails du vol
                 numVolField.setText(rs.getString("numvol"));
-                heureDepField.setText(rs.getString("heure_depart"));
-                heureArrField.setText(rs.getString("heure_arrive"));
+
+                // Formater les heures sans les secondes
+                LocalTime heureDepart = rs.getTime("heure_depart").toLocalTime();
+                LocalTime heureArrivee = rs.getTime("heure_arrive").toLocalTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                
+                heureDepField.setText(heureDepart.format(formatter)); // Afficher heure départ HH:mm
+                heureArrField.setText(heureArrivee.format(formatter)); // Afficher heure arrivée HH:mm
+                
                 villeDepField.setText(rs.getString("ville_depart"));
                 villeArrField.setText(rs.getString("ville_arrivee"));
                 statusLabel.setText("Vol trouvé. Vous pouvez le modifier ou le supprimer.");
@@ -212,9 +224,10 @@ public class Modifier extends JPanel implements ActionListener {
             return;
         }
 
-        String url = "jdbc:mysql://localhost:3306/vols";
-        String user = "root";
-        String dbPassword = ""; // Mettez ici votre mot de passe MySQL si nécessaire
+
+        // Utiliser LocalTime pour garantir le bon format avant la mise à jour
+        LocalTime heureDepFormatted = LocalTime.parse(heureDep);
+        LocalTime heureArrFormatted = LocalTime.parse(heureArr);
 
         String query = "UPDATE vol SET heure_depart = ?, heure_arrive = ?, ville_depart = ?, ville_arrivee = ? WHERE numvol = ?";
 
@@ -230,8 +243,8 @@ public class Modifier extends JPanel implements ActionListener {
         try (Connection con = DriverManager.getConnection(url, user, dbPassword);
              PreparedStatement pstmt = con.prepareStatement(query)) {
 
-            pstmt.setString(1, heureDep);
-            pstmt.setString(2, heureArr);
+            pstmt.setTime(1, Time.valueOf(heureDepFormatted));
+            pstmt.setTime(2, Time.valueOf(heureArrFormatted));
             pstmt.setString(3, villeDep);
             pstmt.setString(4, villeArr);
             pstmt.setString(5, numVol);
@@ -263,10 +276,6 @@ public class Modifier extends JPanel implements ActionListener {
         if (confirmation != JOptionPane.YES_OPTION) {
             return;
         }
-
-        String url = "jdbc:mysql://localhost:3306/vols";
-        String user = "root";
-        String dbPassword = ""; // Mettez ici votre mot de passe MySQL si nécessaire
 
         String query = "DELETE FROM vol WHERE numvol = ?";
 

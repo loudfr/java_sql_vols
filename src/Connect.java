@@ -12,14 +12,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
-import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 public class Connect extends JFrame implements ActionListener {
     private JPanel p1;
-    private JLabel l1, l2;
+    private JLabel l1, l2, l3;
     private JTextField t1;
     private JPasswordField pf1;
     private JButton b1;
@@ -27,58 +26,68 @@ public class Connect extends JFrame implements ActionListener {
 
     public Connect() {
         super("Authentification");
-        setSize(400, 200);
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
+        
         GridBagConstraints gbc = new GridBagConstraints();
-
-        p1 = new JPanel();
-        p1.setLayout(new GridLayout(3, 2));
+        setLayout(new GridBagLayout()); // Utiliser un GridBagLayout globalement
+        
+        l3 = new JLabel("Connecte-toi !");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2; // Occupe toute la largeur (deux colonnes)
+        l3.setFont(l3.getFont().deriveFont(20.0f));
+        gbc.insets = new Insets(20, 20, 20, 20);
+        add(l3, gbc);
 
         l1 = new JLabel("Nom d'utilisateur : ");
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(20, 20, 20, 20);
-        p1.add(l1, gbc);
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        add(l1, gbc);
 
         t1 = new JTextField(15);
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        p1.add(t1, gbc);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        add(t1, gbc);
 
         l2 = new JLabel("Mot de passe : ");
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        p1.add(l2, gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        add(l2, gbc);
 
         pf1 = new JPasswordField(15);
         gbc.gridx = 1;
-        gbc.gridy = 1;
-        p1.add(pf1, gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        add(pf1, gbc);
 
         b1 = new JButton("Se connecter");
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2; // Occupe toute la largeur
         gbc.insets = new Insets(20, 20, 20, 20);
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Étire le bouton sur toute la largeur
+        gbc.anchor = GridBagConstraints.CENTER; // Centre le bouton
         b1.addActionListener(this);
-        p1.add(b1, gbc);
-
-        add(p1);
+        add(b1, gbc);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String username = t1.getText();
         String password = new String(pf1.getPassword());
+        
         if (authenticate(username, password)) {
             authenticated = true;
-            System.out.println("Authentification réussie");
-            dispose(); // Fermer la fenêtre de connexion
+            dispose();
         } else {
-            System.out.println("Authentification échouée");
+            authenticated = false;
             JOptionPane.showMessageDialog(this, "Nom d'utilisateur ou mot de passe incorrect", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -96,20 +105,15 @@ public class Connect extends JFrame implements ActionListener {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return true; // Authentication successful
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Authentication failed
+        return false; 
     }
 
     public boolean isAuthenticated() {
         return authenticated;
-    }
-
-    public static void main(String[] args) {
-        Connect c = new Connect();
-        c.setVisible(true);
     }
 }
