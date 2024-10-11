@@ -5,15 +5,13 @@ import java.awt.event.*;
 import java.sql.*;
 
 public class Afficher extends JPanel implements ActionListener {
-    @SuppressWarnings("unused")
     private JLabel labelDepart, labelArrivee, titre;
     private JTextField textDepart, textArrivee;
     private JButton btnRechercher;
     private JTable tableResultats;
     private DefaultTableModel tableModel;
-    @SuppressWarnings("unused")
-    private Choix choix; // Référence au cadre principal pour navigation
-    private JCheckBox checkPlusRapide; // Nouvelle case à cocher
+    private Choix choix; 
+    private JCheckBox checkPlusRapide; 
 
     public Afficher(Choix choix) {
         this.choix = choix;
@@ -42,7 +40,6 @@ public class Afficher extends JPanel implements ActionListener {
         gbc.insets = new Insets(10, 10, 10, 10); // Espacement
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Label et champ pour la ville de départ
         labelDepart = new JLabel("Ville de départ :");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -52,7 +49,6 @@ public class Afficher extends JPanel implements ActionListener {
         gbc.gridx = 1;
         panelRecherche.add(textDepart, gbc);
 
-        // Label et champ pour la ville d'arrivée
         labelArrivee = new JLabel("Ville d'arrivée :");
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -69,7 +65,6 @@ public class Afficher extends JPanel implements ActionListener {
         gbc.gridwidth = 2;
         panelRecherche.add(checkPlusRapide, gbc);
 
-        // Bouton de recherche
         btnRechercher = new JButton("Rechercher");
         btnRechercher.addActionListener(this);
         gbc.gridx = 0;
@@ -109,7 +104,7 @@ public class Afficher extends JPanel implements ActionListener {
         // Connexion à la base de données et récupération des vols
         String url = "jdbc:mysql://localhost:3306/vols";
         String user = "root";
-        String password = ""; // Mettez ici votre mot de passe MySQL si nécessaire
+        String password = ""; 
 
         String query = "SELECT numvol, heure_depart, heure_arrive, ville_depart, ville_arrivee FROM vol WHERE 1=1";
 
@@ -148,7 +143,6 @@ public class Afficher extends JPanel implements ActionListener {
 
             // Vider le tableau avant d'ajouter de nouveaux résultats
             tableModel.setRowCount(0);
-
             boolean hasResults = false;
 
             while (rs.next()) {

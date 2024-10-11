@@ -17,20 +17,17 @@ public class Modifier extends JPanel implements ActionListener {
     private JPanel cardPanel;
     @SuppressWarnings("unused")
     private Choix choix;
-
-    // Composants pour le panneau de modification/suppression
     private JTextField searchNumVolField;
     private JButton btnSearch, btnUpdate, btnDelete;
     private JTextField numVolField, heureDepField, heureArrField, villeDepField, villeArrField;
     private JLabel statusLabel;
 
     public Modifier(Choix choix) {
-        //this.choix = choix;
         setLayout(new BorderLayout());
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        // Panneau de modification/suppression
+        // panneau de modification/suppression
         JPanel modifyPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbcMod = new GridBagConstraints();
         gbcMod.insets = new Insets(10,10,10,10);
@@ -67,7 +64,6 @@ public class Modifier extends JPanel implements ActionListener {
         gbcMod.gridx = 2;
         modifyPanel.add(btnSearch, gbcMod);
 
-        // Champs pour afficher et modifier les détails du vol
         JLabel numVolLabel = new JLabel("Numéro de vol:");
         gbcMod.gridx = 0;
         gbcMod.gridy = 2;
@@ -131,21 +127,15 @@ public class Modifier extends JPanel implements ActionListener {
         gbcMod.gridwidth = 3;
         modifyPanel.add(statusLabel, gbcMod);
 
-        // Ajouter le panneau de modification/suppression au CardLayout
-        /*cardPanel.add(loginPanel, "Login");*/
         cardPanel.add(modifyPanel, "Modify");
-
         add(cardPanel, BorderLayout.CENTER);
-
-        // Afficher le panneau de modification/suppression par défaut
-        cardLayout.show(cardPanel, "Modify"); /* name:Login */
+        cardLayout.show(cardPanel, "Modify");
     }
 
+    // choix de l'action
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*if (e.getSource() == btnLogin) {
-            handleLogin();
-        } else*/ if (e.getSource() == btnSearch) {
+        if (e.getSource() == btnSearch) {
             handleSearch();
         } else if (e.getSource() == btnUpdate) {
             handleUpdate();
@@ -154,6 +144,7 @@ public class Modifier extends JPanel implements ActionListener {
         } 
     }
 
+    // action bouton recherche
     private void handleSearch() {
         String numVol = searchNumVolField.getText().trim();
 
@@ -187,11 +178,10 @@ public class Modifier extends JPanel implements ActionListener {
                 // Formater les heures sans les secondes
                 LocalTime heureDepart = rs.getTime("heure_depart").toLocalTime();
                 LocalTime heureArrivee = rs.getTime("heure_arrive").toLocalTime();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // convertit les heures
                 
-                heureDepField.setText(heureDepart.format(formatter)); // Afficher heure départ HH:mm
-                heureArrField.setText(heureArrivee.format(formatter)); // Afficher heure arrivée HH:mm
-                
+                heureDepField.setText(heureDepart.format(formatter));
+                heureArrField.setText(heureArrivee.format(formatter));
                 villeDepField.setText(rs.getString("ville_depart"));
                 villeArrField.setText(rs.getString("ville_arrivee"));
                 statusLabel.setText("Vol trouvé. Vous pouvez le modifier ou le supprimer.");
@@ -206,6 +196,7 @@ public class Modifier extends JPanel implements ActionListener {
         }
     }
 
+    // mise a jour des valeurs dans la bd
     private void handleUpdate() {
         String numVol = numVolField.getText().trim();
         String heureDep = heureDepField.getText().trim();
@@ -223,7 +214,6 @@ public class Modifier extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(this, "Format invalide pour les heures (HH:MM).", "Erreur de format", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
 
         // Utiliser LocalTime pour garantir le bon format avant la mise à jour
         LocalTime heureDepFormatted = LocalTime.parse(heureDep);
@@ -263,6 +253,7 @@ public class Modifier extends JPanel implements ActionListener {
         }
     }
 
+    // suppression d'un vol
     private void handleDelete() {
         String numVol = numVolField.getText().trim();
 

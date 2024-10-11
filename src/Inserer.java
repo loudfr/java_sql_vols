@@ -11,11 +11,9 @@ import java.sql.Statement;
 import java.util.regex.Pattern;
 
 public class Inserer extends JPanel implements ActionListener {
-    @SuppressWarnings("unused")
     private JLabel numvol, hdep, harr, adep, aarr, titre;
     private JTextField num_vol, h_dep, h_arr, a_dep, a_arr, affichage;
     private JButton btn;
-    @SuppressWarnings("unused")
     private Choix choix; // Référence au cadre principal pour navigation
 
     public Inserer(Choix choix) {
@@ -39,7 +37,7 @@ public class Inserer extends JPanel implements ActionListener {
 
         add(topPanel, BorderLayout.NORTH);
 
-        // Création des champs de texte et des labels 
+        // création des champs de texte et des labels 
         num_vol = new JTextField(10);
         numvol = new JLabel("Entrer numéro de vol");
         h_dep = new JTextField(10);
@@ -51,20 +49,18 @@ public class Inserer extends JPanel implements ActionListener {
         a_arr = new JTextField(10);
         aarr = new JLabel("Entrer l'aéroport d'arrivée");
         
-        // Affichage du message de confirmation
+        // affichage du message de confirmation
         affichage = new JTextField(20);
         affichage.setEditable(false);
         
-        // Bouton pour enregistrer
         btn = new JButton("Enregistrer le vol");
         btn.addActionListener(this);
 
-        // Utilisation de GridBagLayout pour organiser les composants
         JPanel p = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new java.awt.Insets(10, 10, 10, 10); // Espacement
-
+        c.insets = new java.awt.Insets(10, 10, 10, 10);
+        
         c.gridx = 0;
         c.gridy = 0;
         p.add(numvol, c);
@@ -115,12 +111,12 @@ public class Inserer extends JPanel implements ActionListener {
         String ville_arrivee = a_arr.getText();
         
         if (e.getSource() == btn) {
-            // Validation des heures
+            // validation des heures sinon message d'erreur
             if (!isValidTimeFormat(heure_depart) || !isValidTimeFormat(heure_arrive)) {
                 JOptionPane.showMessageDialog(this, "Format invalide (HH:MM) OU valeurs erronées (24h)", "Erreur de format", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // Enregistrement dans la base de données
+            // enregistrement dans la base de données
             enregistrerVol(numvol, heure_depart, heure_arrive, ville_depart, ville_arrivee);
             affichage.setText("Le vol " + numvol + " est bien enregistré !");
         }
@@ -131,7 +127,6 @@ public class Inserer extends JPanel implements ActionListener {
         return Pattern.matches(timePattern, time);
     }
 
-    // Connexion à la base de données vols
     public void enregistrerVol(String numvol, String heure_depart, String heure_arrive, String ville_depart, String ville_arrivee) {
         String url = "jdbc:mysql://localhost:3306/vols";
         Connection con = null;
